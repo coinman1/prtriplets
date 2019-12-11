@@ -1,0 +1,111 @@
+import time
+from acctmis import *
+
+###############################################################################################################################################################
+
+CODES = {}
+AREACODE = "https://www.bennetyee.org/ucsd-pages/area.html"
+
+###############################################################################################################################################################
+#Reads the website with areacodes and gets the first table (only one table on site) and stores table into global dictionary CODES. 
+def get_area_codes():
+    soup = get_web_page(AREACODE)
+    table_list = get_table(soup)
+    i = 0
+    for row in table_list:
+        CODES[table_list[i][0]] = [table_list[i][1],table_list[i][2],table_list[i][3]]
+        i += 1
+    if True:
+        return "True"
+    else:
+        print("Error")
+        return "False"
+
+###############################################################################################################################################################
+#Checks if get_area_codes function was run
+#Checks if the input is in a valid format, string with a length of 3, and if it is in the global dictionary.
+#It returns the state code as string.
+def get_state_for_code(n):
+    if CODES == {}:
+        print("Error, Please run get_area_codes function first")
+    else:
+        if type(n) == str:
+            if len(n) == 3:
+                if n in CODES.keys():
+                    return str(CODES[n][0])
+                else:
+                    print("Error. Not found in dictionary")
+                    return "None"
+            else:
+                print("Error. Length of string isn't three")
+                return "None"
+        else:
+            print("Error. Input was not a string")
+            return "None"
+###############################################################################################################################################################
+#Checks if get_area_codes function was run.
+#Check input to determine string or integer. Print error if not.
+#Takes Integer, checks for a length of 10, checks if the first 3 digits is a key in the dictionary CODES, and returns all data about the area code
+#Take string, check for length of 10,12,14, check for 10 digits in the string, checks for valid formatting, and checks if first 3 digits is a key in the CODES dictionary, returns data about area code.
+#Prints errors and reason for error, and return none.
+def get_data_for_number(n):
+    if CODES == {}:
+        print("Error, Please run get_area_codes function first")
+    else:
+        if type(n) == int:
+            if len(str(n)) == 10:
+                if str(n)[0:3] in CODES.keys():
+                    return CODES[str(n)[0:3]]
+                else:
+                    print("Error. Not found in dictionary")
+                    return "None"
+            else:
+                print("Error. Integer doesn't have exactly 10 digits such as XXXXXXXXXX")
+                return "None"
+        elif type(n) == str:    
+            if len(n) == 14:
+                if sum(x.isdigit() for x in n) == 10:
+                    if n[0] == "(" and n[1:4].isdigit() and n[4] == ")" and n[5] == " " and n[6:9].isdigit() and n[9] == " " and n[10:14].isdigit():
+                        if n[1:4] in CODES.keys():
+                            return CODES[n[1:4]]
+                        else:
+                            print("Error, not found in dictionary")
+                            return "None"
+                    else:
+                        print("Error. Not valid format. Try string in this format '(XXX) XXX XXXX'")
+                        return "None"
+                else:
+                    print("Error. String doesn't have exactly 10 digits inside of it.")
+                    return "None"
+            elif len(n) == 10:
+                    if n[0:10].isdigit():
+                        if n[0:3] in CODES.keys():
+                            return CODES[n[0:3]]
+                        else:
+                            print("Error. Not found in dictionary")
+                            return "None"
+                    else:
+                        print("Error. String doesn't have exactly 10 digits. Try 'XXXXXXXXXX'")
+                        return "None"
+            elif len(n) == 12:
+                if sum(x.isdigit() for x in n) == 10:
+                    if n[0:3].isdigit() and n[3] == "-" and n[4:7].isdigit() and n[7] == "-" and n[8:12].isdigit():
+                        if n[0:3] in CODES.keys():
+                            return CODES[n[0:3]]
+                        else:
+                            print("Error. Not found in dictionary")
+                            return "None"
+                    else:
+                        print("Error. Not valid format. Try string in this format 'XXX-XXX-XXXX'")
+                        return "None"
+                else:
+                    print("Error. String doesn't have exactly 10 digits inside of it.")
+                    return "None"
+            else:
+                print("Error. String doesn't have an appropriate length such as 10, 12, or 14")
+                return "None"
+        else:
+            print("Error. Input was not a string or integer")
+            return "None"
+        
+    
